@@ -82,8 +82,8 @@ int *copy_array(const int *array, int length){
  */
 void bubble_sort(int *array, int length){
     if (array){
-        int ops = 1;
-        while (ops > 0){
+        int ops;
+        do {
             ops = 0;
             for (int i = 0; i < length-1; i++) {
                 if (array[i] > array[i+1]){
@@ -91,7 +91,7 @@ void bubble_sort(int *array, int length){
                     ops++;
                 }
             }
-        }
+        } while (ops > 0);
     }
     return;
 }
