@@ -1,0 +1,1 @@
+docker rmi --force $(docker images | grep tp_udesa | tr -s ' ' | cut -d ' ' -f 3)
