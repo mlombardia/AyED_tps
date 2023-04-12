@@ -1247,10 +1247,10 @@ int main(void) {
     return_code += !test_empty_size_and_length(); //CHECK
     return_code += !test_insert_head_successfully(); //CHECL
     return_code += !test_insert_head_fails(); //CHECK
-    return_code += !test_destroy_value();
-    return_code += !test_insert_tail_successfully();
-    return_code += !test_insert_tail_fails();
-    return_code += !test_peek_head();
+    return_code += !test_destroy_value(); //CHECK
+    return_code += !test_insert_tail_successfully(); //CHECK
+    return_code += !test_insert_tail_fails(); //CHECK
+    return_code += !test_peek_head(); //CHECK
     return_code += !test_peek_tail();
     return_code += !test_pop_empty_list();
     return_code += !test_simple_pop_head();
