@@ -7,7 +7,7 @@
 bool test_create_and_destroy_list() {
     bool tests_result = true;
     list_t* list = list_new();
-    tests_result &= test_assert("La lista fue creada\n----------------", list != NULL);
+    tests_result &= test_assert("La lista fue creada", list != NULL);
     list_destroy(list, NULL);
     return tests_result;
 }
@@ -17,7 +17,7 @@ bool test_create_with_failed_malloc() {
     set_malloc_status(false);
     list_t* list = list_new();
     set_malloc_status(true);
-    tests_result &= test_assert("La lista no fue creada\n----------------", list == NULL);
+    tests_result &= test_assert("La lista no fue creada", list == NULL);
     return tests_result;
 }
 
@@ -26,7 +26,7 @@ bool test_empty_size_and_length() {
     list_t* list = list_new();
     tests_result &= test_assert("La lista fue creada", list != NULL);
     tests_result &= test_assert("El largo de la lista es 0", list_length(list) == 0);
-    tests_result &= test_assert("La lista está vacia\n----------------", list_is_empty(list));
+    tests_result &= test_assert("La lista está vacia", list_is_empty(list));
     list_destroy(list, NULL);
     return tests_result;
 }
@@ -39,7 +39,7 @@ bool test_insert_head_successfully() {
     tests_result &= test_assert("La lista está vacia", list_is_empty(list));
     tests_result &= test_assert("Se inserto un elemento en la lista", list_insert_head(list, NULL));
     tests_result &= test_assert("El largo de la lista es 1", list_length(list) == 1);
-    tests_result &= test_assert("La lista no está vacia\n----------------", !list_is_empty(list));
+    tests_result &= test_assert("La lista no está vacia", !list_is_empty(list));
     list_destroy(list, NULL);
     return tests_result;
 }
@@ -54,7 +54,7 @@ bool test_insert_head_fails() {
     set_malloc_status(true);
     tests_result &= test_assert("El largo de la lista es 0", list_length(list) == 0);
     tests_result &= test_assert("Luego de fallar vuelve a funcionar insertar", list_insert_head(list, NULL));
-    tests_result &= test_assert("El largo de la lista es 1\n----------------", list_length(list) == 1);
+    tests_result &= test_assert("El largo de la lista es 1", list_length(list) == 1);
     list_destroy(list, NULL);
     return tests_result;
 }
@@ -70,7 +70,7 @@ bool test_destroy_value() {
     }
     tests_result &= test_assert("Se insertaron 100 elementos en la lista", insert_status);
     list_destroy(list, free);
-    test_assert("Se destruyo la lista\n----------------", true);
+    test_assert("Se destruyo la lista", true);
     return tests_result;
 }
 
@@ -82,7 +82,7 @@ bool test_insert_tail_successfully() {
     tests_result &= test_assert("La lista está vacia", list_is_empty(list));
     tests_result &= test_assert("Se inserto un elemento en la lista", list_insert_tail(list, NULL));
     tests_result &= test_assert("El largo de la lista es 1", list_length(list) == 1);
-    tests_result &= test_assert("La lista no está vacia\n----------------", !list_is_empty(list));
+    tests_result &= test_assert("La lista no está vacia", !list_is_empty(list));
     list_destroy(list, NULL);
     return tests_result;
 }
@@ -97,7 +97,7 @@ bool test_insert_tail_fails() {
     set_malloc_status(true);
     tests_result &= test_assert("El largo de la lista es 0", list_length(list) == 0);
     tests_result &= test_assert("Luego de fallar vuelve a funcionar insertar", list_insert_tail(list, NULL));
-    tests_result &= test_assert("El largo de la lista es 1\n----------------", list_length(list) == 1);
+    tests_result &= test_assert("El largo de la lista es 1", list_length(list) == 1);
     list_destroy(list, NULL);
     return tests_result;
 }
@@ -111,7 +111,7 @@ bool test_peek_head() {
         int* aux = malloc(sizeof(int));
         *aux = i;
         list_insert_head(list, aux);
-        tests_result &= test_assert("El valor de head es correcto\n----------------",
+        tests_result &= test_assert("El valor de head es correcto",
                                     *((int*)list_peek_head(list)) == i);
     }
     list_destroy(list, free);
@@ -127,7 +127,7 @@ bool test_peek_tail() {
         int* aux = malloc(sizeof(int));
         *aux = i;
         list_insert_tail(list, aux);
-        tests_result &= test_assert("El valor de head es correcto\n----------------",
+        tests_result &= test_assert("El valor de head es correcto",
                                     *((int*)list_peek_tail(list)) == i);
     }
     list_destroy(list, free);
@@ -139,7 +139,7 @@ bool test_pop_empty_list() {
     list_t *list = list_new();
     tests_result &= test_assert("La lista fue creada", list != NULL);
     tests_result &= test_assert("La salida de pop head es NULL", !list_pop_head(list));
-    tests_result &= test_assert("La salida de pop tail es NULL\n----------------", !list_pop_tail(list));
+    tests_result &= test_assert("La salida de pop tail es NULL", !list_pop_tail(list));
     list_destroy(list, NULL);
     return tests_result;
 }
@@ -159,7 +159,7 @@ bool test_simple_pop_head() {
     tests_result &= test_assert("El largo de la lista es 1", list_length(list) == 1);
     tests_result &= test_assert("Al eliminar el head el valor es correcto", *((int*)list_pop_head(list)) == 42);
     tests_result &= test_assert("No hay más elementos en la lista", !list_pop_head(list));
-    tests_result &= test_assert("El largo de la lista es 0\n----------------", list_length(list) == 0);
+    tests_result &= test_assert("El largo de la lista es 0", list_length(list) == 0);
     free(aux);
     list_destroy(list, NULL);
     return tests_result;
@@ -180,7 +180,7 @@ bool test_simple_pop_tail() {
     tests_result &= test_assert("El largo de la lista es 1", list_length(list) == 1);
     tests_result &= test_assert("Al eliminar el tail el valor es correcto", *((int*)list_pop_tail(list)) == 42);
     tests_result &= test_assert("No hay más elementos en la lista", !list_pop_tail(list));
-    tests_result &= test_assert("El largo de la lista es 0\n----------------", list_length(list) == 0);
+    tests_result &= test_assert("El largo de la lista es 0", list_length(list) == 0);
     free(aux);
     list_destroy(list, NULL);
     return tests_result;
@@ -208,7 +208,7 @@ bool test_multiple_peek() {
             tests_result &= test_assert("Se inserto un número al final", list_insert_tail(list, aux));
             tests_result &= test_assert("El valor de head es correcto",
                                         *((int*)list_peek_head(list)) == (i-1));
-            tests_result &= test_assert("El valor de tail es el insertado\n----------------",
+            tests_result &= test_assert("El valor de tail es el insertado",
                                         *((int*)list_peek_tail(list)) == i);
 
         }
@@ -237,7 +237,7 @@ bool test_multiple_pop() {
         free(aux);
     }
 
-    tests_result &= test_assert("La lista está vacia\n----------------", list_is_empty(list));
+    tests_result &= test_assert("La lista está vacia", list_is_empty(list));
 
     list_destroy(list, NULL);
     return tests_result;
@@ -292,7 +292,7 @@ bool test_multiple_pop_random_patterns() {
         free(aux);
     }
 
-    tests_result &= test_assert("La lista está vacia\n----------------", list_is_empty(list));
+    tests_result &= test_assert("La lista está vacia", list_is_empty(list));
 
     list_destroy(list, NULL);
     return tests_result;
@@ -358,7 +358,7 @@ bool test_multiple_random_failed_operations() {
             case 1: //insert head fallido
                 aux = list_pop_tail(list1);
                 aux2 = list_pop_tail(list2);
-                tests_result &= test_assert("El valor extraido de las listas es correcto\n----------------", aux == aux2);
+                tests_result &= test_assert("El valor extraido de las listas es correcto", aux == aux2);
                 free(aux);
         }
     }
@@ -374,7 +374,7 @@ bool test_iter_create_and_destroy() {
     list_iter_t* iter = list_iter_create_head(list);
     list_iter_t* iter2 = list_iter_create_tail(list);
     tests_result &= test_assert("El iterador en head fue creado", iter != NULL);
-    tests_result &= test_assert("El iterador en tail fue creado\n----------------", iter2 != NULL);
+    tests_result &= test_assert("El iterador en tail fue creado", iter2 != NULL);
     list_iter_destroy(iter);
     list_iter_destroy(iter2);
     list_destroy(list, NULL);
@@ -390,7 +390,7 @@ bool test_iter_create_with_failed_malloc() {
     list_iter_t* iter2 = list_iter_create_tail(list);
     set_malloc_status(true);
     tests_result &= test_assert("El iterador en head no fue creado", iter == NULL);
-    tests_result &= test_assert("El iterador en tail no fue creado\n----------------", iter2 == NULL);
+    tests_result &= test_assert("El iterador en tail no fue creado", iter2 == NULL);
     list_destroy(list, NULL);
     return tests_result;
 }
@@ -406,7 +406,7 @@ bool test_iter_empty_list_move_fails() {
     tests_result &= test_assert("El iterador en head no puede avanzar", !list_iter_forward(iter));
     tests_result &= test_assert("El iterador en head no puede retroceder", !list_iter_backward(iter));
     tests_result &= test_assert("El iterador en tail no puede avanzar", !list_iter_forward(iter2));
-    tests_result &= test_assert("El iterador en tail no puede retroceder\n----------------", !list_iter_backward(iter2));
+    tests_result &= test_assert("El iterador en tail no puede retroceder", !list_iter_backward(iter2));
     list_iter_destroy(iter);
     list_iter_destroy(iter2);
     list_destroy(list, NULL);
@@ -425,7 +425,7 @@ bool test_iter_one_element_list_move_fails() {
     tests_result &= test_assert("El iterador en head no puede avanzar", !list_iter_forward(iter));
     tests_result &= test_assert("El iterador en head no puede retroceder", !list_iter_backward(iter));
     tests_result &= test_assert("El iterador en tail no puede avanzar", !list_iter_forward(iter2));
-    tests_result &= test_assert("El iterador en tail no puede retroceder\n----------------", !list_iter_backward(iter2));
+    tests_result &= test_assert("El iterador en tail no puede retroceder", !list_iter_backward(iter2));
     list_iter_destroy(iter);
     list_iter_destroy(iter2);
     list_destroy(list, NULL);
@@ -447,7 +447,7 @@ bool test_iter_simple_move() {
     tests_result &= test_assert("El iterador en head avanzo", list_iter_forward(iter));
     tests_result &= test_assert("El iterador en head no puede volver a avanzar", !list_iter_forward(iter));
     tests_result &= test_assert("El iterador en head retrocedio", list_iter_backward(iter));
-    tests_result &= test_assert("El iterador en head no puede volver a retroceder\n----------------", !list_iter_backward(iter));
+    tests_result &= test_assert("El iterador en head no puede volver a retroceder", !list_iter_backward(iter));
     list_iter_destroy(iter);
     list_destroy(list, free);
     return tests_result;
@@ -459,7 +459,7 @@ bool test_iter_peek_empty_list() {
     tests_result &= test_assert("La lista fue creada", list != NULL);
     list_iter_t* iter = list_iter_create_head(list);
     tests_result &= test_assert("El iterador en head fue creado", iter != NULL);
-    tests_result &= test_assert("El valor del actual del iterador es NULL\n----------------", !list_iter_peek_current(iter));
+    tests_result &= test_assert("El valor del actual del iterador es NULL", !list_iter_peek_current(iter));
     list_iter_destroy(iter);
     list_destroy(list, free);
     return tests_result;
@@ -483,7 +483,7 @@ bool test_iter_move_and_peek() {
     tests_result &= test_assert("El valor del actual del iterador es 2",
                                 *((int*)list_iter_peek_current(iter)) == 2);
     tests_result &= test_assert("El iterador en head retrocedio", list_iter_backward(iter));
-    tests_result &= test_assert("El valor del actual del iterador es 1\n----------------",
+    tests_result &= test_assert("El valor del actual del iterador es 1",
                                 *((int*)list_iter_peek_current(iter)) == 1);
     list_iter_destroy(iter);
     list_destroy(list, free);
@@ -509,7 +509,7 @@ bool test_iter_move_at_start_and_end() {
     tests_result &= test_assert("El iterador esta al final", list_iter_at_last(iter));
     tests_result &= test_assert("El iterador en head retrocedio", list_iter_backward(iter));
     tests_result &= test_assert("El iterador esta al principio", list_iter_at_first(iter));
-    tests_result &= test_assert("El iterador no esta al final\n----------------", !list_iter_at_last(iter));
+    tests_result &= test_assert("El iterador no esta al final", !list_iter_at_last(iter));
     list_iter_destroy(iter);
     list_destroy(list, free);
     return tests_result;
@@ -547,7 +547,7 @@ bool test_iter_full_list_read_only() {
                                     *((int*)list_iter_peek_current(iter)) == i);
     }
     tests_result &= test_assert("El iterador esta al principio", list_iter_at_first(iter));
-    tests_result &= test_assert("El iterador no esta al final\n----------------", !list_iter_at_last(iter));
+    tests_result &= test_assert("El iterador no esta al final", !list_iter_at_last(iter));
     list_iter_destroy(iter);
     list_destroy(list, free);
     return tests_result;
@@ -595,7 +595,7 @@ bool test_iter_move_on_random_list() {
     tests_result &= test_assert("El largo de la lista es consistente con la cantidad iterada",
                                 list_length(list) == cant);
     tests_result &= test_assert("El iterador esta al principio", list_iter_at_first(iter));
-    tests_result &= test_assert("El iterador no esta al final\n----------------", !list_iter_at_last(iter));
+    tests_result &= test_assert("El iterador no esta al final", !list_iter_at_last(iter));
     list_iter_destroy(iter);
     list_destroy(list, free);
     return tests_result;
@@ -667,7 +667,7 @@ bool test_iter_insert_after_at_start_fails() {
     tests_result &= test_assert("Se remueve el primer elemento y es un 1", *aux == 1);
     free(aux);
     aux = list_pop_head(list);
-    tests_result &= test_assert("Se remueve el primer elemento y es un 3\n----------------", *aux == 3);
+    tests_result &= test_assert("Se remueve el primer elemento y es un 3", *aux == 3);
     free(aux);
     list_destroy(list, free);
     return tests_result;
@@ -720,7 +720,7 @@ bool test_iter_insert_after_at_middle() {
     tests_result &= test_assert("Se remueve el primer elemento y es un 3", *aux == 3);
     free(aux);
     aux = list_pop_head(list);
-    tests_result &= test_assert("Se remueve el primer elemento y es un 4\n----------------", *aux == 4);
+    tests_result &= test_assert("Se remueve el primer elemento y es un 4", *aux == 4);
     free(aux);
     list_destroy(list, free);
     return tests_result;
@@ -774,7 +774,7 @@ bool test_iter_insert_after_at_tail() {
     tests_result &= test_assert("Se remueve el ultimo elemento y es un 2", *aux == 2);
     free(aux);
     aux = list_pop_tail(list);
-    tests_result &= test_assert("Se remueve el ultimo elemento y es un 1\n----------------", *aux == 1);
+    tests_result &= test_assert("Se remueve el ultimo elemento y es un 1", *aux == 1);
     free(aux);
     list_destroy(list, free);
     return tests_result;
@@ -820,7 +820,7 @@ bool test_iter_insert_before_at_end() {
     tests_result &= test_assert("Se remueve el primer elemento y es un 2", *aux == 2);
     free(aux);
     aux = list_pop_head(list);
-    tests_result &= test_assert("Se remueve el primer elemento y es un 3\n----------------", *aux == 3);
+    tests_result &= test_assert("Se remueve el primer elemento y es un 3", *aux == 3);
     free(aux);
     list_destroy(list, free);
     return tests_result;
@@ -862,7 +862,7 @@ bool test_iter_insert_before_at_end_fails() {
     tests_result &= test_assert("Se remueve el primer elemento y es un 1", *aux == 1);
     free(aux);
     aux = list_pop_head(list);
-    tests_result &= test_assert("Se remueve el primer elemento y es un 3\n----------------", *aux == 3);
+    tests_result &= test_assert("Se remueve el primer elemento y es un 3", *aux == 3);
     free(aux);
     list_destroy(list, free);
     return tests_result;
@@ -915,7 +915,7 @@ bool test_iter_insert_before_at_middle() {
     tests_result &= test_assert("Se remueve el primer elemento y es un 3", *aux == 3);
     free(aux);
     aux = list_pop_head(list);
-    tests_result &= test_assert("Se remueve el primer elemento y es un 4\n----------------", *aux == 4);
+    tests_result &= test_assert("Se remueve el primer elemento y es un 4", *aux == 4);
     free(aux);
     list_destroy(list, free);
     return tests_result;
@@ -969,7 +969,7 @@ bool test_iter_insert_before_at_head() {
     tests_result &= test_assert("Se remueve el primer elemento y es un 3", *aux == 3);
     free(aux);
     aux = list_pop_head(list);
-    tests_result &= test_assert("Se remueve el primer elemento y es un 4\n----------------", *aux == 4);
+    tests_result &= test_assert("Se remueve el primer elemento y es un 4", *aux == 4);
     free(aux);
     list_destroy(list, free);
     return tests_result;
@@ -1021,7 +1021,7 @@ bool test_iter_insert_empty_lists() {
     tests_result &= test_assert("El iterador está en el ultimo", list_iter_at_last(iter));
     list_iter_destroy(iter);
     aux = list_pop_tail(list);
-    tests_result &= test_assert("Se remueve el ultimo elemento y es un 4\n----------------", *aux == 4);
+    tests_result &= test_assert("Se remueve el ultimo elemento y es un 4", *aux == 4);
     free(aux);
 
     list_destroy(list, free);
@@ -1035,7 +1035,7 @@ bool test_iter_delete_empty_list() {
 
     list_iter_t* iter = list_iter_create_head(list);
     tests_result &= test_assert("El iterador en head fue creado", iter != NULL);
-    tests_result &= test_assert("No hay nada para borrar\n----------------", !list_iter_delete(iter));
+    tests_result &= test_assert("No hay nada para borrar", !list_iter_delete(iter));
     list_iter_destroy(iter);
 
     list_destroy(list, free);
@@ -1060,7 +1060,7 @@ bool test_iter_delete_one_element_list() {
 
     tests_result &= test_assert("La lista esta vacia", list_is_empty(list));
     tests_result &= test_assert("No hay nada en el principio", !list_peek_head(list));
-    tests_result &= test_assert("No hay nada en el final\n----------------", !list_peek_tail(list));
+    tests_result &= test_assert("No hay nada en el final", !list_peek_tail(list));
 
     list_destroy(list, free);
     return tests_result;
@@ -1113,7 +1113,7 @@ bool test_iter_delete_head() {
     tests_result &= test_assert("Se remueve el primer elemento y es un 3", *aux == 3);
     free(aux);
     aux = list_pop_head(list);
-    tests_result &= test_assert("Se remueve el primer elemento y es un 4\n----------------", *aux == 4);
+    tests_result &= test_assert("Se remueve el primer elemento y es un 4", *aux == 4);
     free(aux);
 
     list_destroy(list, free);
@@ -1167,7 +1167,7 @@ bool test_iter_delete_tail() {
     tests_result &= test_assert("Se remueve el primer elemento y es un 2", *aux == 2);
     free(aux);
     aux = list_pop_tail(list);
-    tests_result &= test_assert("Se remueve el primer elemento y es un 1\n----------------", *aux == 1);
+    tests_result &= test_assert("Se remueve el primer elemento y es un 1", *aux == 1);
     free(aux);
 
     list_destroy(list, free);
@@ -1231,7 +1231,7 @@ bool test_iter_delete_middle() {
     tests_result &= test_assert("Se remueve el primer elemento y es un 2", *aux == 2);
     free(aux);
     aux = list_pop_tail(list);
-    tests_result &= test_assert("Se remueve el primer elemento y es un 1\n----------------", *aux == 1);
+    tests_result &= test_assert("Se remueve el primer elemento y es un 1", *aux == 1);
     free(aux);
 
     list_destroy(list, free);
@@ -1242,46 +1242,46 @@ bool test_iter_delete_middle() {
 int main(void) {
     srand(42);
     int return_code = 0;
-    // return_code += !test_create_and_destroy_list(); //ALLOKAY
-    // return_code += !test_create_with_failed_malloc(); //ALLOKAY
-    // return_code += !test_empty_size_and_length(); //ALLOKAY
-    // return_code += !test_insert_head_successfully(); //LEAK
-    // return_code += !test_insert_head_fails(); //LEAK
-    // return_code += !test_destroy_value(); //LEAK
-    // return_code += !test_insert_tail_successfully(); //LEAK
-    // return_code += !test_insert_tail_fails(); //LEAK
-    // return_code += !test_peek_head(); //LEAK
-    // return_code += !test_peek_tail(); //LEAK
-    // return_code += !test_pop_empty_list(); //ALLOKAY
-    // return_code += !test_simple_pop_head(); //LEAK
-    // return_code += !test_simple_pop_tail(); //LEAK
-    // return_code += !test_multiple_peek(); //LEAK
-    // return_code += !test_multiple_pop(); //LEAK
-    // return_code += !test_multiple_pop_random_patterns(); //LEAK
-    // return_code += !test_multiple_random_failed_operations(); //LEAK
-    // return_code += !test_iter_create_and_destroy(); //ALLOKAY
-    // return_code += !test_iter_create_with_failed_malloc(); //ALLOKAY
-    // return_code += !test_iter_empty_list_move_fails(); //ALLOKAY
-    // return_code += !test_iter_one_element_list_move_fails(); //ALLOKAY
-    // return_code += !test_iter_simple_move(); //LEAK
-    // return_code += !test_iter_peek_empty_list(); //ALLOKAY
-    // return_code += !test_iter_move_and_peek(); //LEAK
-    // return_code += !test_iter_move_at_start_and_end(); //LEAK
-    // return_code += !test_iter_full_list_read_only(); //LEAK
-    // return_code += !test_iter_move_on_random_list(); //LEAK
-    // return_code += !test_iter_insert_after_at_start(); //LEAK
-    // return_code += !test_iter_insert_after_at_start_fails(); //LEAK
-    // return_code += !test_iter_insert_after_at_middle(); //LEAK
-    // return_code += !test_iter_insert_after_at_tail(); //LEAK
-    // return_code += !test_iter_insert_before_at_end(); //LEAK
-    // return_code += !test_iter_insert_before_at_end_fails(); //LEAK
-    // return_code += !test_iter_insert_before_at_middle(); // LEAK
-    // return_code += !test_iter_insert_before_at_head(); //LEAK
-    // return_code += !test_iter_insert_empty_lists(); //LEAKTESTS
-    // return_code += !test_iter_delete_empty_list(); //ALLOKAY
-    // return_code += !test_iter_delete_one_element_list(); // LEAK
-    // return_code += !test_iter_delete_head(); //LEAK
-    // return_code += !test_iter_delete_tail(); //LEAK
-    // return_code += !test_iter_delete_middle(); //LEAK
+    return_code += !test_create_and_destroy_list();
+    return_code += !test_create_with_failed_malloc();
+    return_code += !test_empty_size_and_length();
+    return_code += !test_insert_head_successfully();
+    return_code += !test_insert_head_fails();
+    return_code += !test_destroy_value();
+    return_code += !test_insert_tail_successfully();
+    return_code += !test_insert_tail_fails();
+    return_code += !test_peek_head();
+    return_code += !test_peek_tail();
+    return_code += !test_pop_empty_list();
+    return_code += !test_simple_pop_head();
+    return_code += !test_simple_pop_tail();
+    return_code += !test_multiple_peek();
+    return_code += !test_multiple_pop();
+    return_code += !test_multiple_pop_random_patterns();
+    return_code += !test_multiple_random_failed_operations();
+    return_code += !test_iter_create_and_destroy();
+    return_code += !test_iter_create_with_failed_malloc();
+    return_code += !test_iter_empty_list_move_fails();
+    return_code += !test_iter_one_element_list_move_fails();
+    return_code += !test_iter_simple_move();
+    return_code += !test_iter_peek_empty_list();
+    return_code += !test_iter_move_and_peek();
+    return_code += !test_iter_move_at_start_and_end();
+    return_code += !test_iter_full_list_read_only();
+    return_code += !test_iter_move_on_random_list();
+    return_code += !test_iter_insert_after_at_start();
+    return_code += !test_iter_insert_after_at_start_fails();
+    return_code += !test_iter_insert_after_at_middle();
+    return_code += !test_iter_insert_after_at_tail();
+    return_code += !test_iter_insert_before_at_end();
+    return_code += !test_iter_insert_before_at_end_fails();
+    return_code += !test_iter_insert_before_at_middle();
+    return_code += !test_iter_insert_before_at_head();
+    return_code += !test_iter_insert_empty_lists();
+    return_code += !test_iter_delete_empty_list();
+    return_code += !test_iter_delete_one_element_list();
+    return_code += !test_iter_delete_head();
+    return_code += !test_iter_delete_tail();
+    return_code += !test_iter_delete_middle();
     return return_code;
 }

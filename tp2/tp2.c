@@ -124,6 +124,8 @@ void *list_pop_head(list_t *list){
     list->tail = NULL;
     list->size--;
 
+    free(aux);
+
     return value;
   }
   
@@ -145,12 +147,16 @@ void *list_pop_tail(list_t *list){
 
   aux = list->tail;
   int *value = aux->value;
+
   if (list->head == list->tail)
   {
     list->head = NULL;
     list->tail = NULL;
     list->size--;
-    return aux->value;
+
+    free(aux);
+
+    return value;
   }
 
   list->tail = list->tail->prev;
@@ -163,16 +169,21 @@ void *list_pop_tail(list_t *list){
 }
 
 void list_destroy(list_t *list, void destroy_value(void *)){
-  if (destroy_value)
-  {
-    while (list->head != list->tail)
+  while (list->head != list->tail)
     {
         node_t *aux = list->head;
         list->head = list->head->next;
-        destroy_value(aux);
+        if (destroy_value)
+        {
+          destroy_value(aux->value);
+        }
+        free(aux);
     }
-    destroy_value(list->head);
-  }
+    if (list->head && destroy_value)
+    {
+      destroy_value(list->head->value);
+    }
+    free(list->head);
   free(list);
 }
 
@@ -242,18 +253,20 @@ void list_iter_destroy(list_iter_t *iter){
 }
 
 bool list_iter_insert_after(list_iter_t *iter, void *value){
-  node_t *node = malloc(sizeof(node_t));
-  if (!node)
-  {
-    return false;
-  }
 
   if (list_is_empty(iter->list))
   {
     if(!list_insert_head(iter->list, value)){
       return false;
     };
+    iter->curr = iter->list->head;
     return true;
+  }
+
+  node_t *node = malloc(sizeof(node_t));
+  if (!node)
+  {
+    return false;
   }
   
   
@@ -274,18 +287,18 @@ bool list_iter_insert_after(list_iter_t *iter, void *value){
 }
 
 bool list_iter_insert_before(list_iter_t *iter, void *value){
-  node_t *node = malloc(sizeof(node_t));
-  if (!node)
-  {
-    return false;
-  }
-
   if (list_is_empty(iter->list))
   {
     if(!list_insert_head(iter->list, value)){
       return false;
     };
     return true;
+  }
+
+  node_t *node = malloc(sizeof(node_t));
+  if (!node)
+  {
+    return false;
   }
 
   node->value = value;

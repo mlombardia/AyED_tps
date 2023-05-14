@@ -1,6 +1,6 @@
 local:
 	gcc -g -std=c99 -Wall -Wconversion -Wno-sign-conversion -Werror -Wl,--wrap=malloc -o tp2 *.c
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./tp2
+	valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./tp2
 	rm tp2
 
 docker:
