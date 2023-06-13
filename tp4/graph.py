@@ -1,5 +1,7 @@
 from typing import Any, List, Optional
+from algorithms import Algorithms
 
+from tqdm import tqdm
 
 class Graph:
     """
@@ -67,7 +69,6 @@ class Graph:
         Prints the graph
         """
         for vertex, data in self._graph.items():
-          if data['data'] == 'Kevin Bacon' or data['data'] == 'Footloose':
             print("Vertex:", vertex)
             print("Data:", data['data'])
             print("Neighbors:", data['neighbors'])
@@ -89,3 +90,23 @@ class Graph:
         :return: boolean
         """
         return vertex1 in self._graph and vertex2 in self._graph[vertex1]['neighbors']
+
+    def get_connected_components(self):
+        """
+        Gets connected components
+        """
+        components = []
+
+        visited_nodes = set()
+
+        for vertex in tqdm(self._graph):
+            if vertex not in visited_nodes:
+                visited_from_component = set()
+
+                Algorithms.dfs(self, vertex, visited_from_component)
+
+                visited_nodes = visited_nodes.union(visited_from_component)
+                components.append(visited_from_component)
+        
+        print("Connected comps qty: ", len(components))
+

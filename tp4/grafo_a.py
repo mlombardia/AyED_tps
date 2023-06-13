@@ -3,7 +3,7 @@ from itertools import combinations
 
 from tqdm import tqdm
 
-from algorithms import BFS, DFS
+from algorithms import Algorithms
 from graph import Graph
 
 MOVIE_TITLE_TYPE = "movie"
@@ -73,4 +73,6 @@ def load_graph(movies_by_id, actors_by_movie, actor_names_by_id) -> Graph:
 
 movies_by_id, actors_by_movie, actor_names_by_id = read_data(MOVIES_DATA_PATH, ACTORS_DATA_PATH, ACTORS_NAMES_PATH)
 graph = load_graph(movies_by_id, actors_by_movie, actor_names_by_id)
-graph.print_graph()
+#graph.print_graph()
+
+graph.get_connected_components()

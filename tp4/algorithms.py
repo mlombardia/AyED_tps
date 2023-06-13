@@ -1,25 +1,35 @@
-class DFS:
-  """
-  DFS Class
-  """
-  def __init__(self):
-    return
+from tqdm import tqdm
 
-  def apply(self):
-    return
+class Algorithms:
 
-class BFS:
-  """
-  BFS Class
-  """
-  def __init__(self):
-    return
-  
-  def apply(self, n, n2):
-    visited = set()
-    s = []
-    s.push({n:0})
-    visited.add(n)
-    while len(s) != 0:
-      s.pop(n)
-    return
+  def dfs(graph, vertex, visited_nodes):
+
+    stack = []
+
+    stack.append(vertex)
+
+    while len(stack) != 0:
+      vertex = stack.pop()
+
+      if vertex not in visited_nodes:
+        visited_nodes.add(vertex)
+      
+      for vert in graph.get_neighbors(vertex):
+        if vert not in visited_nodes:
+          stack.append(vert)
+
+  def bfs(graph, vertex, visited_nodes):
+
+    queue = []
+
+    queue.append(vertex)
+    visited_nodes.add(vertex)
+
+    while len(queue) != 0:
+      vertex = stack.pop(0)
+
+      for vert in graph.get_neighbors(vertex):
+        if vert not in visited_nodes:
+          visited_nodes.add(vert)
+          queue.append(vert)
+      
