@@ -32,7 +32,7 @@ def possible(grid, x, y, n):
     return True
 
 
-def is_full(grid,next_pos):
+def is_full(grid):
     
     """
 
@@ -41,14 +41,13 @@ def is_full(grid,next_pos):
     
     """
 
-    for i in range(next_pos[0],9):
-        for j in range(next_pos[1],9):
-            if(grid[i][j] == 0):
-              next_pos = [i,j]
-              return next_pos
+    for i in range(9):
+        for j in range(9):
+            if(grid[i][j] == 0): 
+              return [i,j]
     return [-1,-1]
 
-def solve(grid,next_pos,next_num):
+def solve(grid):
 
     """ Resuelve un sudoku de 9x9.
 
@@ -59,19 +58,21 @@ def solve(grid,next_pos,next_num):
         grid: El tablero resuelto.
 
     """
-    next_pos = is_full(grid, next_pos)
+    next_pos = is_full(grid)
     print(next_pos)
     if next_pos == [-1,-1]:
       return True
     row = next_pos[0]
     col = next_pos[1]
 
-    for n in range(next_num,10):
+    for n in range(1,10):
       if possible(grid, row, col, n):
         grid[row][col] = n
+      else:
+        continue
 
       print("probably entering again")
-      if solve(grid, next_pos,n+1):
+      if solve(grid):
         return True
 
       grid[row][col] = 0
@@ -90,5 +91,5 @@ grid = [
 [0, 0, 0, 4, 1, 9, 0, 0, 5],
 [0, 0, 0, 0, 8, 0, 0, 7, 9]]
 
-solve(grid, [0,0],0)
+solve(grid)
 print(grid)
