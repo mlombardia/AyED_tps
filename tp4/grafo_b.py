@@ -54,18 +54,25 @@ def load_graph(movies_by_id, actors_by_movie, actor_names_by_id) -> Graph:
     for actor_id in actor_names_by_id.keys():
         #print(actor_id)
         #print(actor_names_by_id[actor_id])
-        graph.add_vertex(actor_id, actor_names_by_id[actor_id])
+        graph.add_vertex(actor_id, actor_names_by_id[actor_id], weighted = False)
 
     for movie_id in actors_by_movie.keys():
         for actor_id in actors_by_movie[movie_id]:
           #print(movies_by_id[movie_id]['primaryTitle'])
           if actor_names_by_id.get(actor_id, "ERROR")!= "ERROR":
             #print(actor_names_by_id[actor_id]['primaryName'])
-            graph.add_edge(movie_id,actor_id)
+            graph.add_edge(movie_id,actor_id, weighted = False)
 
     return graph
 # Define the paths to the datasets
 
 movies_by_id, actors_by_movie, actor_names_by_id = read_data(MOVIES_DATA_PATH, ACTORS_DATA_PATH, ACTORS_NAMES_PATH)
 graph = load_graph(movies_by_id, actors_by_movie, actor_names_by_id)
-graph.print_graph()
+#graph.print_graph()
+graph.load_components_data_b()
+
+#graph.get_separation_grade(vertex1,vertex2) => Ejercicio 2 => BFS desde vertex1 hasta 
+                                                # encontrar vertex2, y ese numero dividirlo
+                                                #  por 2 (por cada pelicula hay 2 saltos)
+#graph.kevin_bacon_number() => Ejercicio 3 => Sería replicar el Ejercicio 2 pero para todos
+                                              #  los actores, y quedarse con el máximo

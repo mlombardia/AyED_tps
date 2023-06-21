@@ -59,7 +59,6 @@ def solve(grid):
 
     """
     next_pos = is_full(grid)
-    print(next_pos)
     if next_pos == [-1,-1]:
       return True
     row = next_pos[0]
@@ -71,7 +70,6 @@ def solve(grid):
       else:
         continue
 
-      print("probably entering again")
       if solve(grid):
         return True
 
