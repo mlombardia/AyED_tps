@@ -4,99 +4,42 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define SIZE 10
-//#define ALPHA 0.75
+#define SIZE 100000
+#define ALPHA 0.75
 
-// https://www.programmingalgorithms.com/algorithm/fnv-hash/c/
-unsigned int FNVHash(const char* str, unsigned int length) {
-	const unsigned int fnv_prime = 0x811C9DC5;
+unsigned int prehash(const char* str) {
 	unsigned int hash = 0;
 	unsigned int i = 0;
 
-	for (i = 0; i < length; str++, i++)
+	for (i = 0; i < strlen(str); i++)
 	{
-		hash *= fnv_prime;
+		hash = (hash * 31) + str[i];
 		hash ^= (*str);
 	}
 
 	return hash;
 }
 
-struct dictionary_slot;
-typedef struct dictionary_slot dictionary_slot_t;
+struct dictionary_entry;
+typedef struct dictionary_entry dictionary_entry_t;
 
-struct dictionary_slot {
+struct dictionary_entry {
   char *key;
   void *value;
-  bool contains_NULL;
+  dictionary_entry_t *next;
 };
 
 struct dictionary {
-  dictionary_slot_t **slots;
+  dictionary_entry_t **slots;
   size_t size;
   size_t count;
   destroy_f destroy_fn;
 };
 
-int hash(dictionary_t *dictionary, const char *key){
-  unsigned int prehash = FNVHash(key, (unsigned int)strlen(key));
-  return (int) prehash % (int) dictionary->size;
+unsigned int hash(dictionary_t *dictionary, const char *key){
+  unsigned int prehash_value = prehash(key);
+  return prehash_value % (int) dictionary->size;
 }
-
-bool slot_is_assigned(dictionary_slot_t *slot){
-  return slot != NULL;
-}
-
-bool slot_contains_key(dictionary_slot_t *slot, const char *key){
-  if (slot_is_assigned(slot))
-  {
-    return strcmp(slot->key,key) == 0;
-  }
-  return false;
-}
-dictionary_slot_t *find_slot(dictionary_t *dictionary, const char *key){
-  int index = hash(dictionary, key);
-
-  dictionary_slot_t *slot = dictionary->slots[index];
-  
-  while ((slot && strcmp(slot->key, key) != 0) && index < dictionary->count)
-  {
-    slot = dictionary->slots[++index];
-  }
-
-  if (!slot || strcmp(slot->key, key) != 0)
-  {
-    return NULL;
-  }
-
-  return slot;
-}
-
-// dictionary_t *resize_dictionary(dictionary_t *dictionary){
-//   dictionary_t *new_dict = malloc(sizeof(dictionary_t));
-//   if (!new_dict)
-//   {
-//     return NULL;
-//   }
-//   new_dict->size = dictionary->size + SIZE;
-//   new_dict->slots = calloc(new_dict->size, sizeof(dictionary_slot_t *));
-//   if (!new_dict->slots)
-//   {
-//     return NULL;
-//   }
-//   new_dict->count = 0;
-//   new_dict->destroy_fn = dictionary->destroy_fn;
-  
-//   for (size_t i = 0; i < dictionary->size; i++)
-//   {
-//     if (slot_is_assigned(dictionary->slots[i]))
-//     {
-//       dictionary_put(new_dict, dictionary->slots[i]->key, dictionary->slots[i]->value);
-//     }
-//   }
-  
-//   return new_dict;
-// }
 
 dictionary_t *dictionary_create(destroy_f destroy) {
   dictionary_t *dictionary = malloc(sizeof(dictionary_t));
@@ -104,145 +47,198 @@ dictionary_t *dictionary_create(destroy_f destroy) {
   {
     return NULL;
   }
-  dictionary->size = SIZE;
-  dictionary->slots = calloc(dictionary->size, sizeof(dictionary_slot_t *));
+  
+  dictionary->slots = calloc(SIZE, sizeof(dictionary_entry_t*));
   if (!dictionary->slots)
   {
     return NULL;
   }
+  
+  dictionary->size = SIZE;
   dictionary->count = 0;
   dictionary->destroy_fn = destroy;
-  
-  return dictionary; 
-  };
+  return dictionary;
+}
 
 bool dictionary_put(dictionary_t *dictionary, const char *key, void *value) {
-
-  // if (((float)dictionary->count/(float)dictionary->size) >= ALPHA)
-  // {
-  //   dictionary = resize_dictionary(dictionary);
-  // }
   
+  unsigned int index = hash(dictionary, key);
 
-  int index = hash(dictionary, key);
-
-  bool is_assigned = slot_is_assigned(dictionary->slots[index]);
-  
-  while ( is_assigned && !slot_contains_key(dictionary->slots[index], key))
-  {
-    index++;
-  }
-
-  if (!is_assigned)
-  {
-    dictionary->slots[index] = malloc(sizeof(dictionary_slot_t));
-    if (!dictionary->slots[index])
-    {
+  if(dictionary->slots[index] == NULL){
+    dictionary_entry_t *entry = malloc(sizeof(dictionary_entry_t));
+    if(!entry){
       return false;
     }
-    
-    (dictionary->slots[index])->key = malloc(strlen(key)+1);
-    
-    if (!(dictionary->slots[index])->key)
-    {
+    entry->key = malloc(strlen(key)+1);
+    if (!entry->key){
       return false;
     }
-
-    strcpy((dictionary->slots[index])->key, key);
-    
-    (dictionary->slots[index])->value = value;
-    (dictionary->slots[index])->contains_NULL = false;
+    entry->key = strcpy(entry->key,key);
+    entry->value = value;
+    entry->next = NULL;
+    dictionary->slots[index] = entry;
     dictionary->count++;
   } else {
-    if (dictionary->destroy_fn && (dictionary->slots[index])->value)
-    {
-      dictionary->destroy_fn((dictionary->slots[index])->value);
-      //(dictionary->slots[index])->value = malloc(sizeof(void *));
+    dictionary_entry_t *latest_entry = dictionary->slots[index];
+    while(latest_entry->next != NULL && strcmp(latest_entry->key,key)!=0){
+      latest_entry = latest_entry->next;
     }
-    (dictionary->slots[index])->value = value;
-    (dictionary->slots[index])->contains_NULL = false;
+
+    if (strcmp(latest_entry->key,key) == 0){
+      if(latest_entry->key){
+        dictionary->destroy_fn(latest_entry->value);
+      }
+      latest_entry->value = value;
+    }else {
+      dictionary_entry_t *entry = malloc(sizeof(dictionary_entry_t));
+      if(!entry){
+        return false;
+      }
+      entry->key = malloc(strlen(key)+1);
+      if (!entry->key){
+        return false;
+      }
+      entry->key = strcpy(entry->key,key);
+      entry->value = value;
+      entry->next = NULL;
+      latest_entry->next = entry;
+      dictionary->count++;
+    }
+  }
+
+  if ((double)dictionary->count / (double)dictionary->size > ALPHA){
+    dictionary_entry_t **slots = dictionary->slots;
+
+    size_t previous_size = dictionary->size;
+    dictionary->size += SIZE;
+    dictionary->slots = calloc(dictionary->size, sizeof(dictionary_entry_t*));
+    dictionary->count = 0;
+
+    for (int i = 0; i < previous_size; i++){
+      dictionary_entry_t *current = slots[i];
+      while (current != NULL){
+        dictionary_put(dictionary, current->key, current->value);
+        dictionary_entry_t *temp = current;
+        current = current->next;
+        free(temp->key);
+        free(temp);
+      }
+    }
+    free(slots);
   }
 
   return true;
-};
+}
 
 void *dictionary_get(dictionary_t *dictionary, const char *key, bool *err) {
-  dictionary_slot_t *slot = find_slot(dictionary, key);
-  if (!slot || slot->value == NULL)
+  
+  unsigned int index = hash(dictionary, key);
+  dictionary_entry_t *entry = dictionary->slots[index];
+
+  while (entry != NULL && strcmp(entry->key, key) != 0 ){
+    entry = entry->next;
+  }
+
+  if (!entry || strcmp(entry->key, key) != 0)
   {
-    *err = true;
+    *err=true;
     return NULL;
   }
   
+  
   *err=false;
-  return slot->value;
-};
+  return entry->value;
+}
 
 bool dictionary_delete(dictionary_t *dictionary, const char *key) {
-  dictionary_slot_t *slot = find_slot(dictionary, key);
-  if (!slot)
-  {
-    return false;
+  unsigned int index = hash(dictionary, key);
+
+  dictionary_entry_t *current = dictionary->slots[index];
+  dictionary_entry_t *previous = NULL;
+
+  while (current != NULL && strcmp(current->key, key) != 0 ){
+    previous = current;
+    current = current->next;
   }
 
-  free(slot->value);
-  free(slot->key);
-
-  slot->key = NULL;
-
-  free(slot);
-  slot = NULL;
-
+  if (previous == NULL){
+    dictionary->slots[index] = current->next; 
+  } else {
+    previous->next = current->next;
+  }
+  
+  free(current->key);
+  if (dictionary->destroy_fn)
+  {
+    dictionary->destroy_fn(current->value);
+  }
+  free(current);
   dictionary->count--;
+
   return true;
 };
 
 void *dictionary_pop(dictionary_t *dictionary, const char *key, bool *err) {
-  dictionary_slot_t *slot = find_slot(dictionary, key);
-  if (!slot)
+  unsigned int index = hash(dictionary, key);
+
+  dictionary_entry_t *current = dictionary->slots[index];
+  dictionary_entry_t *previous = NULL;
+
+  while (current != NULL && strcmp(current->key, key) != 0 ){
+    previous = current;
+    current = current->next;
+  }
+
+  if (!current)
   {
     *err = true;
     return NULL;
   }
 
-  if (!slot->value)
+  if (strcmp(current->key, key) != 0)
   {
     *err = true;
     return NULL;
   }
   
+  if (previous == NULL){
+    dictionary->slots[index] = current->next; 
+  } else {
+    previous->next = current->next;
+  }
+  
+  void *value = current->value;
 
-  void *value = slot->value;
-
-  slot->value = NULL;
-  slot->contains_NULL = true;
+  free(current->key);
+  free(current);
+  dictionary->count--;
 
   *err = false;
   return value;
 };
 
 bool dictionary_contains(dictionary_t *dictionary, const char *key) {
-  dictionary_slot_t *slot = find_slot(dictionary, key);
-  if (!slot)
-  {
-    return false;
-  }
-  return slot != NULL && slot->key != NULL && strcmp(slot->key, key) == 0;
+  bool err;
+  void *value = dictionary_get(dictionary, key, &err);
+  return value != NULL;
 };
 
 size_t dictionary_size(dictionary_t *dictionary) { return dictionary->count; };
 
 void dictionary_destroy(dictionary_t *dictionary){
-  for (int i = 0; i < dictionary->size; i++)
-  {
-
-    if (slot_is_assigned(dictionary->slots[i]))
-    {
-      free(dictionary->slots[i]->key);
+  for (int i = 0; i < dictionary->size; i++){
+    dictionary_entry_t *current = dictionary->slots[i];
+    while (current != NULL){
+      dictionary_entry_t *aux = current;
+      current = current->next;
+      free(aux->key);
+      if (dictionary->destroy_fn)
+      {
+        dictionary->destroy_fn(aux->value);
+      }
+      
+      free(aux);
     }
-    
-
-    free(dictionary->slots[i]);
   }
   free(dictionary->slots);
   free(dictionary);

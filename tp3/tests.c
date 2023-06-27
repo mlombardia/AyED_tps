@@ -131,8 +131,7 @@ bool test_put_get_delete_loop() {
   printf("========== %s ==========\n", __PRETTY_FUNCTION__);
   bool tests_result = true;
   dictionary_t *dict = dictionary_create(free);
-  for (size_t i = 0; i < 2; i++) {
-    printf("========== iteracion %d ==========\n", (int)i);
+  for (size_t i = 0; i < 5; i++) {
     char *key = malloc(sizeof("key"));
     strcpy(key, "key");
     int *value0 = malloc(sizeof(int));
@@ -334,22 +333,28 @@ bool test_fail_insert() {
 int main(void) {
   srand(117);
   int return_code = 0;
-  return_code += !test_create_and_destroy_dict(); //ALLOKAY
-  return_code += !test_create_failed(); //ALLOKAY
-  return_code += !test_create_dict_nodestroy(); //ALLOKAY
-  return_code += !test_put_malloc_fail(); //ALLOKAY
-  return_code += !test_put_size(); //ALLOKAY
-  return_code += !test_pop_get(); //ALLOKAY
-  return_code += !test_get_errcode(); //ALLOKAY
+  return_code += !test_create_and_destroy_dict();
+  return_code += !test_create_failed();
+  return_code += !test_create_dict_nodestroy();
+  return_code += !test_put_malloc_fail();
+  return_code += !test_put_size();
+  return_code += !test_pop_get();
+  return_code += !test_get_errcode();
   return_code += !test_put_get_delete_loop();
-  return_code += !test_put_NULL(); //CHECK TEST
+  return_code += !test_put_NULL();
   return_code += !test_insert_random_sequence(512, 117, false);
   return_code += !test_insert_random_sequence(512, 117, true);
   return_code += !test_insert_random_sequence(2048, 117, false);
   return_code += !test_insert_random_sequence(2048, 117, true);
   return_code += !test_insert_random_sequence(65536, 117, false);
   return_code += !test_insert_random_sequence(65536, 117, true);
-  return_code += !test_malloc_fail_create(); //ALLOKAY
-  return_code += !test_fail_insert(); //ALLOKAY
+  return_code += !test_insert_random_sequence(1048576, 117, false);
+  return_code += !test_malloc_fail_create();
+  return_code += !test_fail_insert();
+  if (return_code == 0) {
+    printf("Todo ok!\n");
+  } else {
+    printf("Error code is %d\n", return_code);
+  }
   return return_code;
 }
