@@ -7,13 +7,15 @@
 #define SIZE 100000
 #define ALPHA 0.75
 
-unsigned int prehash(const char* str) {
+// https://www.programmingalgorithms.com/algorithm/fnv-hash/c/
+unsigned int FNVHash(const char* str, unsigned int length) {
+	const unsigned int fnv_prime = 0x811C9DC5;
 	unsigned int hash = 0;
 	unsigned int i = 0;
 
-	for (i = 0; i < strlen(str); i++)
+	for (i = 0; i < length; str++, i++)
 	{
-		hash = (hash * 31) + str[i];
+		hash *= fnv_prime;
 		hash ^= (*str);
 	}
 
@@ -37,7 +39,7 @@ struct dictionary {
 };
 
 unsigned int hash(dictionary_t *dictionary, const char *key){
-  unsigned int prehash_value = prehash(key);
+  unsigned int prehash_value = FNVHash(key, (unsigned int)strlen(key));
   return prehash_value % (int) dictionary->size;
 }
 
